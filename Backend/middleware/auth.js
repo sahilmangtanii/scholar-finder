@@ -1,10 +1,20 @@
 const admin = require("firebase-admin");
-const User = require("../models/user"); // Your Mongoose user model
-const serviceAccount = require("../config/serviceAccountKey.json");
+const User = require("../models/user");
+
+let serviceAccount;
+
+if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+  // Render / Prod me ENV se parse karega
+  serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+} else {
+  // Local dev ke liye file se uthayega
+  serviceAccount = require("../config/serviceAccountKey.json");
+}
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
+
 // Middleware to verify token and attach UID
 const verifyFirebaseToken = async (req, res, next) => {
   const authHeader = req.headers.authorization;
