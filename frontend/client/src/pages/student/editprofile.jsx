@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../../styles/editProfile.css';
 import axios from 'axios';
+const API = import.meta.env.VITE_API_URL;
 import { useFirebase } from '../../firebase';
 import Header from './Header'; // Import Header componen
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
@@ -28,7 +29,7 @@ const EditProfile = () => {
       if (!firebase.user) return;
       try {
         const token = await firebase.user.getIdToken();
-        const res = await axios.get('http://localhost:5050/api/user/profile', {
+        const res = await axios.get(`${API}/api/user/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setFormData(res.data.User); // or res.data depending on your API shape
@@ -49,7 +50,7 @@ const EditProfile = () => {
     e.preventDefault();
     try {
       const token = await firebase.user.getIdToken();
-      await axios.put('http://localhost:5050/api/user/profile', formData, {
+      await axios.put(`${API}/api/user/profile`, formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       alert("Profile updated successfully!");

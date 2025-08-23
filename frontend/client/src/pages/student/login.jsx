@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../../styles/login.css";
+const API = import.meta.env.VITE_API_URL;
 import { useFirebase } from "../../firebase";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -57,7 +58,7 @@ const Login = () => {
     console.log("Signed in Google email:", email); // ✅ Check if email is defined
 
     const response = await axios.post(
-      "http://localhost:5050/api/user/checkUserProfile",
+      `${API}/api/user/checkUserProfile`,
       { email }
     );
 

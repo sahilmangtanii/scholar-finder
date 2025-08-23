@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+const API = import.meta.env.VITE_API_URL;
 import '../../styles/Header.css';
 import {
   AppBar, Toolbar, Typography, IconButton, Menu, MenuItem, Avatar,
@@ -33,7 +34,7 @@ const Header = () => {
   const handleNotificationClick = async () => {
   try {
     const token = await user.getIdToken();
-    await axios.patch("http://localhost:5050/api/notifications/mark-all-read", {
+    await axios.patch(`${API}/api/notifications/mark-all-read`, {
     }, {
       headers: {
         Authorization: `Bearer ${token}`
@@ -52,7 +53,7 @@ const Header = () => {
         //console.log(token);
         const token = await user.getIdToken();
         console.log(token);
-        const res = await axios.get("http://localhost:5050/api/user/profile", {
+        const res = await axios.get(`${API}/api/user/profile`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setUserData(res.data.User);
@@ -65,7 +66,7 @@ const Header = () => {
       if (!user) return;
       try {
         const token = await user.getIdToken();
-        const res = await axios.get("http://localhost:5050/api/notifications", {
+        const res = await axios.get(`${API}/api/notifications`, {
           headers: { Authorization: `Bearer ${token}` }
         });
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useFirebase } from "../../firebase";
+const API = import.meta.env.VITE_API_URL;
 import axios from "axios";
 import {
   Box,
@@ -26,7 +27,7 @@ const Dashboard = () => {
     }
 
       try {
-        const res = await axios.get(`http://localhost:5050/api/scholarships/match/${userId}`);
+        const res = await axios.get(`${API}/api/scholarships/match/${userId}`);
         console.log("Matched scholarships:", res.data);
         setScholarships(res.data);
       } catch (err) {
@@ -46,7 +47,7 @@ const Dashboard = () => {
       const token = await user.getIdToken();
       console.log("Fetched token:", token);
 
-      const res = await axios.get("http://localhost:5050/api/user/profile", {
+      const res = await axios.get(`${API}/api/user/profile`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -1,6 +1,7 @@
 // src/components/Profile.jsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+const API = import.meta.env.VITE_API_URL;
 import { useFirebase } from '../../firebase';
 import '../../styles/profile.css';
 import Header from "./Header";
@@ -26,7 +27,7 @@ const Profile = () => {
       if (!user) return;
       try {
         const token = await user.getIdToken();
-        const res = await axios.get('http://localhost:5050/api/user/profile', {
+        const res = await axios.get(`${API}/api/user/profile`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

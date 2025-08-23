@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../../styles/signup.css';
+const API = import.meta.env.VITE_API_URL;
 import { useFirebase } from '../../firebase';
 import axios from 'axios';
 import { auth } from '../../firebase'; // adjust path if needed
@@ -50,7 +51,7 @@ const CompleteProfile = () => {
         firebaseUid,
       };
 
-      const res = await axios.post('http://localhost:5050/api/user/profile', profileData);
+      const res = await axios.post(`${API}/api/user/profile`, profileData);
       console.log("✅ Profile saved:", res.data);
       alert("Profile completed successfully!");
     } catch (err) {

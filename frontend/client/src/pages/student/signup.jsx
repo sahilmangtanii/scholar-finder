@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+const API = import.meta.env.VITE_API_URL;
 import '../../styles/signup.css';
 import { useFirebase } from '../../firebase';
 import axios from 'axios';
@@ -56,7 +57,7 @@ const Signup = () => {
       };
 
     // ✅ Send data to backend using Axios
-    const response = await axios.post('http://localhost:5050/api/user/profile', profileData);
+    const response = await axios.post(`${API}/api/user/profile`, profileData);
 
     console.log("✅ Profile saved:", response.data);
     //alert("Signup successful!");
