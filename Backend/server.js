@@ -10,21 +10,41 @@ const userRoutes = require('./routes/userRoute.js');
 dotenv.config();
 const app = express();
 
-app.use(cors());
-app.use(express.json());
 
-// Connect to MongoDB
+const allowed = [
+  process.env.FRONTEND_URL,   // e.g. https://scholarship-finder.vercel.app
+  "http://localhost:5173"     // local dev (vite)
+];
+
+app.use(cors({
+  origin: (origin, cb) => {
+    if (!origin || allowed.includes(origin)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+}));
+
+//  Body parser
+app.use(express.json({ limit: "1mb" }));
+app.use(express.urlencoded({ extended: true }));
+
+//  MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log("✅ MongoDB connected"))
   .catch((err) => console.error("❌ MongoDB connection error:", err));
 
-// Routes
+//  Routes
 app.use('/api/scholarships', scholarshipRoutes);
-app.use("/api/user", userRoutes);
-app.use("/api/notifications", notificationRoutes);
+app.use('/api/user', userRoutes);
+app.use('/api/notifications', notificationRoutes);
+
+//  Health check endpoint (recommended for Render)
+app.get('/health', (_, res) => res.send('ok'));
 
 const PORT = process.env.PORT || 5050;
-
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });

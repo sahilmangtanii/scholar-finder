@@ -1,4 +1,12 @@
 {
+  "name": "scholarship-finder-backend",
+  "version": "1.0.0",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
   "dependencies": {
     "axios": "^1.10.0",
     "body-parser": "^2.2.0",
