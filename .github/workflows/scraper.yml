@@ -28,4 +28,4 @@ jobs:
           COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
           BACKEND_URL: ${{ secrets.BACKEND_URL }}
         run: |
-          python scraper.py
+          python scholarship-scrapper/scrapers/scrapper.py
