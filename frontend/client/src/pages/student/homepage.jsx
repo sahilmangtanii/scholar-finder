@@ -47,7 +47,7 @@ const Dashboard = () => {
       const token = await user.getIdToken();
       console.log("Fetched token:", token);
 
-      const res = await axios.get(`${API}/api/user/profile`, {
+    const res = await axios.get(`${API}/api/user/profile`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

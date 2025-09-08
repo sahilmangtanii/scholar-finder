@@ -6,6 +6,7 @@ const cors = require('cors');
 const notificationRoutes = require('./routes/notification');
 const scholarshipRoutes = require('./routes/scholarshipRoutes');
 const userRoutes = require('./routes/userRoute.js');
+const scraperRoute = require('./routes/scrapper.js');
 
 dotenv.config();
 const app = express();
@@ -40,7 +41,7 @@ mongoose.connect(process.env.MONGODB_URI)
 app.use('/api/scholarships', scholarshipRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/notifications', notificationRoutes);
-
+app.use("/api/scraper", scraperRoute);
 //  Health check endpoint (recommended for Render)
 app.get('/health', (_, res) => res.send('ok'));
 
