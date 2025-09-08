@@ -1,11 +1,16 @@
+import os
+import requests
+import json
+import re
+import time
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
-import time
-import re
-import requests
 from cohere import extract_structured_eligibility  # import extractor
+
+# ------------------ CONFIG ------------------
+BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:5050")
 
 # ------------------ DATE PARSER ------------------
 def convert_days_to_date(text):
@@ -27,7 +32,7 @@ def convert_days_to_date(text):
 def send_to_backend(scholarship_data):
     try:
         response = requests.post(
-            "http://localhost:5050/api/scholarships/add",
+            f"{BACKEND_URL}/api/scholarships/add",
             json=scholarship_data
         )
         if response.status_code == 201:
@@ -108,7 +113,7 @@ def start_scraper():
     for idx, (title, eligibility, deadline, award, link) in enumerate(zip(titles, eligibility_list, deadline_list, awards, links)):
         print(f"📤 Processing: {link}")
 
-        response = requests.get(f"http://localhost:5050/api/scholarships/title/{title}")
+        response = requests.get(f"{BACKEND_URL}/api/scholarships/title/{title}")
         if response.status_code == 200:
             # update deadline if exists
             deadline_obj = None
@@ -119,7 +124,7 @@ def start_scraper():
                     pass
 
             update_payload = {"title": title, "deadline": deadline_obj.isoformat() if deadline_obj else None}
-            update_res = requests.post("http://localhost:5050/api/scholarships/update-deadline", json=update_payload)
+            update_res = requests.post(f"{BACKEND_URL}/api/scholarships/update-deadline", json=update_payload)
 
             if update_res.status_code == 200:
                 print(f"✅ Updated deadline for: {title}")
