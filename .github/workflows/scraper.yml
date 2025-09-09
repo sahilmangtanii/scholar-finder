@@ -1,8 +1,8 @@
-name: Daily Scraper
+name: Weekly Scraper
 
 on:
   schedule:
-    - cron: "0 0 * * *"   # Roz raat 12 baje chalega (UTC time)
+    - cron: "0 0 * * 0"   # Har Sunday raat 12 baje (UTC time)
   workflow_dispatch:       # Manual trigger option
 
 jobs:
