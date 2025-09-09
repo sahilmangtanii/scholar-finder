@@ -56,7 +56,7 @@ router.get('/send-deadline-reminders', async (req, res) => {
     const startIST = new Date(istNow.getFullYear(), istNow.getMonth(), istNow.getDate());
     // End = +3 days (in IST)
     const endIST = new Date(startIST);
-    endIST.setDate(endIST.getDate() + 6);
+    endIST.setDate(endIST.getDate() + 3);
 
     console.log("🔍 Checking deadlines between:", startIST, "and", endIST);
 
