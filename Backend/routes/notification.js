@@ -43,50 +43,55 @@ async function getMatchedUsersForScholarship(scholarship) {
   return await User.find({ $and: query });
 }
 router.get('/send-deadline-reminders', async (req, res) => {
-    try {
-      console.log(1);
+  try {
+    console.log("⏰ Reminder job running (IST)");
+
     const now = new Date();
-    const startUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-    const endUTC = new Date(startUTC);
-    endUTC.setUTCDate(endUTC.getUTCDate() + 3); // 3 days from now at 00:00 UTC
+
+    // Convert "now" to IST
+    const IST_OFFSET = 5.5 * 60 * 60 * 1000;
+    const istNow = new Date(now.getTime() + IST_OFFSET);
+
+    // Start of today in IST
+    const startIST = new Date(istNow.getFullYear(), istNow.getMonth(), istNow.getDate());
+    // End = +3 days (in IST)
+    const endIST = new Date(startIST);
+    endIST.setDate(endIST.getDate() + 6);
+
+    console.log("🔍 Checking deadlines between:", startIST, "and", endIST);
 
     const upcoming = await Scholarship.find({
-      deadline: {
-        $gte: startUTC,
-        $lte: endUTC
-      }
+      deadline: { $gte: startIST, $lte: endIST }
     });
-    console.log('Found scholarships:', upcoming.length);
-    for(const scholarship of upcoming) {
-        const users = await getMatchedUsersForScholarship(scholarship);
-       // console.log(`Sending reminders for scholarship: ${scholarship.title}`);
 
-        for (const user of users) {
-          const alreadyNotified = await Notification.exists({
-            firebaseUid: user.firebaseUid,
-            scholarshipId: scholarship._id
-          });
+    console.log('📌 Found scholarships:', upcoming.length);
 
-          if (alreadyNotified) {
-            continue; // 🚫 Skip sending same notification again
-          }
+    for (const scholarship of upcoming) {
+      const users = await getMatchedUsersForScholarship(scholarship);
 
-          await Notification.create({
-            firebaseUid: user.firebaseUid,
-            scholarshipId: scholarship._id, // ✅ Track scholarship
-            message: `Reminder: The scholarship "${scholarship.title}" is due on ${scholarship.deadline.toLocaleDateString()}.`,
-            expiresAt: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000) // ✅ Auto-expire in 3 days
-          });
+      for (const user of users) {
+        const alreadyNotified = await Notification.exists({
+          firebaseUid: user.firebaseUid,
+          scholarshipId: scholarship._id
+        });
 
- // console.log(`✅ Sent to ${user.firstName} for ${scholarship.title}`);
+        if (alreadyNotified) continue;
+
+        await Notification.create({
+          firebaseUid: user.firebaseUid,
+          scholarshipId: scholarship._id,
+          message: `Reminder: The scholarship "${scholarship.title}" is due on ${scholarship.deadline.toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata" })}.`,
+          expiresAt: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
+        });
       }
     }
-    res.status(200).json({ message: 'Reminders sent successfully!' });
- } catch (err) {
+
+    res.status(200).json({ message: 'Reminders sent successfully (IST)' });
+  } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Error sending reminders' });
   }
-}); 
+});
 
 
 
