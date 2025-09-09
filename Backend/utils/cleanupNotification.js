@@ -3,7 +3,7 @@ const cron = require('node-cron');
 const Notification = require('../models/Notification');
 
 // Run every day at midnight (00:00)
-cron.schedule('0 0 * * *', async () => {
+cron.schedule('* * * * *', async () => {
   try {
     const result = await Notification.deleteMany({
       read: true,

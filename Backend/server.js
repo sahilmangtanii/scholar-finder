@@ -16,6 +16,8 @@ const allowed = [
   process.env.FRONTEND_URL,   // e.g. https://scholarship-finder.vercel.app
   "http://localhost:5173"     // local dev (vite)
 ];
+require('./utils/cleanupNotification');
+require('./utils/sendDeadlineReminder')();
 
 app.use(cors({
   origin: (origin, cb) => {
