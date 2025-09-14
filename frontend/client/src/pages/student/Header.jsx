@@ -98,7 +98,7 @@ const Header = () => {
         {/* Logo + Brand */}
         <Box
           sx={{ display: 'flex', alignItems: 'center', gap: 2, cursor: 'pointer' }}
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/dashboard')}
         >
           <img src="/logo.png" alt="Logo" style={{ height: 40 }} />
           <Typography variant="h6" component="div" sx={{ fontWeight: 600 }}>

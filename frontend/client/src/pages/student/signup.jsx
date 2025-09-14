@@ -61,7 +61,8 @@ const Signup = () => {
 
     console.log("✅ Profile saved:", response.data);
     //alert("Signup successful!");
-    navigate("/");
+     navigate("/dashboard");
+    
     } catch (err) {
       console.error("Signup failed:", err);
       const currentUser = auth.currentUser;

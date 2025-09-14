@@ -41,7 +41,7 @@ const Login = () => {
         }).then((user) => {
                 const uid = user.uid;
                 localStorage.setItem("userId", uid);
-                navigate("/"); // Redirect to dashboard after successful login
+                navigate("/dashboard"); // Redirect to dashboard after successful login
                 console.log("Login successful");
                 console.log("User email:", email);
             })
@@ -67,7 +67,7 @@ const Login = () => {
     if (!response.data.exists) {
       navigate('/complete-profile', { state: { emailFromGoogle: email } });
     } else {
-      navigate('/');
+      navigate("/dashboard");
     }
   } catch (error) {
     console.error("Google login failed:", error);
