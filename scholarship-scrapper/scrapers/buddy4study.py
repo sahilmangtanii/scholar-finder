@@ -7,12 +7,12 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
-from cohere import extract_structured_eligibility  # import extractor
+from cohere_cleint import extract_structured_eligibility 
 
-# ------------------ CONFIG ------------------
-BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:5050")
 
-# ------------------ DATE PARSER ------------------
+BACKEND_URL = "http://localhost:5050"
+
+
 def convert_days_to_date(text):
     text = text.lower().strip()
     match = re.search(r"(\d+)\s+day[s]?\s+to\s+go", text)
@@ -28,7 +28,7 @@ def convert_days_to_date(text):
     except Exception:
         return None
 
-# ------------------ BACKEND SENDER ------------------
+
 def send_to_backend(scholarship_data):
     try:
         response = requests.post(
@@ -42,7 +42,6 @@ def send_to_backend(scholarship_data):
     except Exception as e:
         print(f"❌ Error sending {scholarship_data['title']}: {e}")
 
-# ------------------ MAIN SCRAPER FUNCTION ------------------
 def start_scraper():
     options = Options()
     options.add_argument("--headless")
@@ -54,7 +53,6 @@ def start_scraper():
     driver.get(url)
     time.sleep(5)
 
-    # Scroll to load all scholarships
     last_height = driver.execute_script("return document.body.scrollHeight")
     while True:
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
@@ -105,7 +103,6 @@ def start_scraper():
                     award = next_el.get_text(strip=True)
             awards.append(award)
 
-    # ------------------ PROCESS WITH BATCHING ------------------
     BATCH_SIZE = 8
     SLEEP_BETWEEN_BATCHES = 65
     scholarships_to_send = []
@@ -115,7 +112,6 @@ def start_scraper():
 
         response = requests.get(f"{BACKEND_URL}/api/scholarships/title/{title}")
         if response.status_code == 200:
-            # update deadline if exists
             deadline_obj = None
             if deadline:
                 try:
@@ -159,8 +155,12 @@ def start_scraper():
             scholarships_to_send = []
             time.sleep(SLEEP_BETWEEN_BATCHES)
 
-    # send leftovers
+
     for s in scholarships_to_send:
         send_to_backend(s)
 
     print("🎯 Scraper finished successfully.")
+
+if __name__ == "__main__":
+    print("Starting Buddy4Study scraper...")
+    start_scraper()
