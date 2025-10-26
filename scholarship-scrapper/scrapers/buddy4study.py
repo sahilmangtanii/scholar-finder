@@ -9,9 +9,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 from cohere_cleint import extract_structured_eligibility 
 
-
-BACKEND_URL = "http://localhost:5050"
-
+BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:5050")
 
 def convert_days_to_date(text):
     text = text.lower().strip()
