@@ -2,7 +2,7 @@ name: Weekly Scraper
 
 on:
   schedule:
-    - cron: "0 0 * * 0"   # Har Sunday raat 12 baje (UTC time)
+    - cron: "*/5 * * * *"  # Har Sunday raat 12 baje (UTC time)
   workflow_dispatch:       # Manual trigger option
 
 jobs:
