@@ -36,44 +36,53 @@ const Signup = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!formData.agreed) {
-      alert("You must agree to terms and conditions.");
-      return;
-    }
-    if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match.");
-      return;
-    }
-    try {
-     const firebaseUser = await firebase.signupUserwithEmailAndPassword(formData.email, formData.password);
-     console.log("firebaseUser:", firebaseUser); 
-      const firebaseUUid = firebaseUser.uid;
-      console.log("Form Submitted:", formData);
-      
-      const profileData = {
-        ...formData,
-        firebaseUid: firebaseUUid, // ✅ This will now work
-      };
+  e.preventDefault();
 
-    // ✅ Send data to backend using Axios
+  if (!formData.agreed) {
+    alert("You must agree to terms and conditions.");
+    return;
+  }
+
+  if (formData.password !== formData.confirmPassword) {
+    alert("Passwords do not match.");
+    return;
+  }
+
+  try {
+    const firebaseUser = await firebase.signupUserwithEmailAndPassword(
+      formData.email,
+      formData.password
+    );
+
+    const firebaseUUid = firebaseUser.uid;
+
+    const profileData = {
+      ...formData,
+      firebaseUid: firebaseUUid,
+    };
+
     const response = await axios.post(`${API}/api/user/profile`, profileData);
 
-    console.log("✅ Profile saved:", response.data);
-    //alert("Signup successful!");
-     navigate("/dashboard");
-    
-    } catch (err) {
-      console.error("Signup failed:", err);
-      const currentUser = auth.currentUser;
-      if (currentUser) {
-        await currentUser.delete();
-        console.log("Deleted Firebase user due to failed signup.");
-      }
-
-      alert("Signup failed: " + err.message);
+    try {
+      await axios.get(`${API}/api/notifications/send-deadline-reminders`);
+    } catch (reminderErr) {
+      console.error("Failed to trigger reminder:", reminderErr.message);
     }
-  };
+
+    navigate("/dashboard");
+
+  } catch (err) {
+    console.error("Signup failed:", err);
+
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+      await currentUser.delete();
+    }
+
+    alert("Signup failed: " + err.message);
+  }
+};
+
 
   return (
     <div className="signup-container">
